@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Transforme Sua Vida em 12 Semanas</title>
+    
+    <!-- EmailJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            background-size: 80px;
+            background-repeat: repeat;
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .beta-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-container {
+            padding: 30px 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+        }
+        
+        .radio-option.selected,
+        .checkbox-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .rating-group {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .rating-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+        
+        .rating-option:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .rating-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .rating-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .rating-label {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 3px;
+            line-height: 1.2;
+        }
+        
+        .submit-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+            min-width: 180px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .privacy-note {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .required {
+            color: #f44336;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .success-message h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            display: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #f44336;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 40px 30px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .form-container {
+                padding: 40px 30px;
+            }
+            
+            .section {
+                padding: 30px;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .form-label {
+                font-size: 1rem;
+            }
+            
+            .form-input,
+            .form-select,
+            .form-textarea {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            
+            .radio-group,
+            .checkbox-group {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .rating-group {
+                grid-template-columns: repeat(10, 1fr);
+            }
+            
+            .rating-option {
+                padding: 15px 5px;
+                min-height: 80px;
+            }
+            
+            .rating-number {
+                font-size: 1.5rem;
+            }
+            
+            .rating-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    
+    <!-- SCRIPT EXATAMENTE IGUAL AO DO HTML FUNCIONAL -->
+    <script>
+        (function(){
+            emailjs.init("MnQW4Hj0BtRSzL0P8");
+        })();
+
+        function enviarFormulario(event) {
+            event.preventDefault();
+            document.getElementById("status").innerText = "Enviando...";
+
+            emailjs.send("service_swt5sfx", "template_xqy7hfa", {
+                from_name: document.getElementById("nome").value,
+                timestamp: new Date().toLocaleString(),
+                avaliacao_geral: document.getElementById("avaliacao").value,
+                recomendaria: document.querySelector('input[name="recomendaria"]:checked')?.value || "",
+                facilidade_navegacao: document.getElementById("facilidade").value,
+                qualidade_conteudo: document.getElementById("qualidade").value,
+                dispositivo: document.getElementById("dispositivo").value,
+                preco_sugerido: document.getElementById("preco").value,
+                feedback_data: document.getElementById("comentario").value,
+                email: "eliteacademia2024@gmail.com"
+            }).then(function() {
+                document.getElementById("status").innerText = "✅ Feedback enviado com sucesso!";
+                document.getElementById("status").style.backgroundColor = "#e8f5e8";
+                document.getElementById("status").style.color = "#2E7D32";
+            }, function(error) {
+                document.getElementById("status").innerText = "❌ Erro ao enviar: " + JSON.stringify(error);
+                document.getElementById("status").style.backgroundColor = "#ffebee";
+                document.getElementById("status").style.color = "#c62828";
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🌟 Feedback do Produto</h1>
+                <p>Transforme Sua Vida em 12 Semanas</p>
+                <div class="beta-badge">VERSÃO BETA - TESTE EXCLUSIVO</div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <form id="feedbackForm" class="form-container" onsubmit="enviarFormulario(event)">
+            <!-- SEÇÃO 1: INFORMAÇÕES BÁSICAS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">👤</span>
+                    Informações Básicas
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Nome (ou iniciais) <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Dispositivo usado para testar <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="dispositivo" required placeholder="Ex: iPhone 12, Samsung Galaxy, Notebook Dell, etc.">
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 2: EXPERIÊNCIA GERAL -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">⭐</span>
+                    Experiência Geral
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Avaliação geral do produto (1-10) <span class="required">*</span></label>
+                    <input type="number" class="form-input" id="avaliacao" min="1" max="10" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Você recomendaria este produto? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="Sim" required>
+                            Sim, recomendaria
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="Não">
+                            Não recomendaria
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Comentário geral:</label>
+                    <textarea class="form-textarea" id="comentario" placeholder="Compartilhe sua opinião sobre o produto..."></textarea>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 3: USABILIDADE E NAVEGAÇÃO -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">🖱️</span>
+                    Usabilidade e Navegação
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Facilidade de navegação entre os materiais (1-10) <span class="required">*</span></label>
+                    <input type="number" class="form-input" id="facilidade" min="1" max="10" required>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 4: CONTEÚDO E QUALIDADE -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">📚</span>
+                    Conteúdo e Qualidade
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Qualidade do conteúdo (1-10) <span class="required">*</span></label>
+                    <input type="number" class="form-input" id="qualidade" min="1" max="10" required>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 5: SUGESTÕES E MELHORIAS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">💡</span>
+                    Sugestões e Melhorias
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Preço que você pagaria por este produto <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="preco" required placeholder="Ex: R$ 100, R$ 150-200, etc.">
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <h3>🚀 Pronto para Enviar?</h3>
+                <p>Seu feedback é muito importante para melhorarmos o produto!</p>
+                <button type="submit" class="submit-btn">📤 Enviar Feedback</button>
+                
+                <div class="status" id="status"></div>
+                
+                <div class="privacy-note">
+                    <strong>🔒 Privacidade:</strong> Suas respostas serão usadas apenas para melhorar o produto. 
+                    Não compartilharemos suas informações com terceiros.
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
