@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Transforme Sua Vida em 12 Semanas</title>
+    
+    <!-- EmailJS CDN - VERSÃO CORRIGIDA -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>');
+            background-size: 80px;
+            background-repeat: repeat;
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .beta-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-container {
+            padding: 30px 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-icon {
+            font-size: 1.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+        }
+        
+        .radio-option.selected,
+        .checkbox-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .rating-group {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .rating-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+        
+        .rating-option:hover {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .rating-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .rating-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .rating-label {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 3px;
+            line-height: 1.2;
+        }
+        
+        .submit-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+            min-width: 180px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .privacy-note {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .required {
+            color: #f44336;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .success-message h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            display: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #f44336;
+        }
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 40px 30px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .form-container {
+                padding: 40px 30px;
+            }
+            
+            .section {
+                padding: 30px;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .form-label {
+                font-size: 1rem;
+            }
+            
+            .form-input,
+            .form-select,
+            .form-textarea {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            
+            .radio-group,
+            .checkbox-group {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .rating-group {
+                grid-template-columns: repeat(10, 1fr);
+            }
+            
+            .rating-option {
+                padding: 15px 5px;
+                min-height: 80px;
+            }
+            
+            .rating-number {
+                font-size: 1.5rem;
+            }
+            
+            .rating-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🌟 Feedback do Produto</h1>
+                <p>Transforme Sua Vida em 12 Semanas</p>
+                <div class="beta-badge">VERSÃO BETA - TESTE EXCLUSIVO</div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <form id="feedbackForm" class="form-container">
+            <!-- SEÇÃO 1: INFORMAÇÕES BÁSICAS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">👤</span>
+                    Informações Básicas
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Nome (ou iniciais) <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Idade</label>
+                    <select class="form-select" name="idade">
+                        <option value="">Selecione sua faixa etária</option>
+                        <option value="18-25">18-25 anos</option>
+                        <option value="26-35">26-35 anos</option>
+                        <option value="36-45">36-45 anos</option>
+                        <option value="46-55">46-55 anos</option>
+                        <option value="56+">56+ anos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Dispositivo usado para testar <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="dispositivo" value="celular" required>
+                            📱 Celular
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="dispositivo" value="tablet" required>
+                            📱 Tablet
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="dispositivo" value="computador" required>
+                            💻 Computador
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="dispositivo" value="multiplos" required>
+                            🔄 Múltiplos dispositivos
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 2: EXPERIÊNCIA GERAL -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">⭐</span>
+                    Experiência Geral
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Avaliação geral do produto (1-10) <span class="required">*</span></label>
+                    <div class="rating-group">
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="1" required>
+                            <span class="rating-number">1</span>
+                            <span class="rating-label">Muito ruim</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="2" required>
+                            <span class="rating-number">2</span>
+                            <span class="rating-label">Ruim</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="3" required>
+                            <span class="rating-number">3</span>
+                            <span class="rating-label">Regular</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="4" required>
+                            <span class="rating-number">4</span>
+                            <span class="rating-label">Bom</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="5" required>
+                            <span class="rating-number">5</span>
+                            <span class="rating-label">Muito bom</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="6" required>
+                            <span class="rating-number">6</span>
+                            <span class="rating-label">Ótimo</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="7" required>
+                            <span class="rating-number">7</span>
+                            <span class="rating-label">Excelente</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="8" required>
+                            <span class="rating-number">8</span>
+                            <span class="rating-label">Fantástico</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="9" required>
+                            <span class="rating-number">9</span>
+                            <span class="rating-label">Incrível</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="avaliacao_geral" value="10" required>
+                            <span class="rating-number">10</span>
+                            <span class="rating-label">Perfeito</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Primeira impressão ao abrir o produto</label>
+                    <textarea class="form-textarea" name="primeira_impressao" placeholder="Descreva sua primeira impressão..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Você recomendaria este produto? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="definitivamente_sim" required>
+                            ✅ Definitivamente sim
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="provavelmente_sim" required>
+                            👍 Provavelmente sim
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="talvez" required>
+                            🤔 Talvez
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="provavelmente_nao" required>
+                            👎 Provavelmente não
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="recomendaria" value="definitivamente_nao" required>
+                            ❌ Definitivamente não
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 3: USABILIDADE E NAVEGAÇÃO -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">🖱️</span>
+                    Usabilidade e Navegação
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Facilidade de navegação (1-10) <span class="required">*</span></label>
+                    <div class="rating-group">
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="1" required>
+                            <span class="rating-number">1</span>
+                            <span class="rating-label">Muito difícil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="2" required>
+                            <span class="rating-number">2</span>
+                            <span class="rating-label">Difícil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="3" required>
+                            <span class="rating-number">3</span>
+                            <span class="rating-label">Complicado</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="4" required>
+                            <span class="rating-number">4</span>
+                            <span class="rating-label">Razoável</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="5" required>
+                            <span class="rating-number">5</span>
+                            <span class="rating-label">OK</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="6" required>
+                            <span class="rating-number">6</span>
+                            <span class="rating-label">Bom</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="7" required>
+                            <span class="rating-number">7</span>
+                            <span class="rating-label">Fácil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="8" required>
+                            <span class="rating-number">8</span>
+                            <span class="rating-label">Muito fácil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="9" required>
+                            <span class="rating-number">9</span>
+                            <span class="rating-label">Intuitivo</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="facilidade_navegacao" value="10" required>
+                            <span class="rating-number">10</span>
+                            <span class="rating-label">Perfeito</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Quais materiais você conseguiu acessar? (marque todos que testou)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="ebook_principal">
+                            📖 Ebook Principal
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="substituicoes_inteligentes">
+                            🔄 Substituições Inteligentes
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="hidratacao">
+                            💧 Guia de Hidratação
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="meal_prep">
+                            🍱 Meal Prep
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="guia_exercicios">
+                            💪 Guia de Exercícios
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="guia_nutricao">
+                            🥗 Guia de Nutrição
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="planilha_acompanhamento">
+                            📋 Planilha de Acompanhamento
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="calendario">
+                            📅 Calendário 12 Semanas
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="materiais_acessados" value="certificados">
+                            🏆 Certificados
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Teve dificuldade para encontrar algum material específico?</label>
+                    <textarea class="form-textarea" name="dificuldades_navegacao" placeholder="Descreva quais materiais foram difíceis de encontrar ou acessar..."></textarea>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 4: ASPECTOS TÉCNICOS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    Aspectos Técnicos
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Velocidade de carregamento <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="velocidade_carregamento" value="muito_lento" required>
+                            🐌 Muito lento
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="velocidade_carregamento" value="lento" required>
+                            🚶 Lento
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="velocidade_carregamento" value="normal" required>
+                            🚗 Normal
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="velocidade_carregamento" value="rapido" required>
+                            🏃 Rápido
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="velocidade_carregamento" value="muito_rapido" required>
+                            ⚡ Muito rápido
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Encontrou algum erro ou problema técnico?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="links_quebrados">
+                            🔗 Links que não funcionam
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="arquivos_nao_abrem">
+                            📄 Arquivos que não abrem
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="calculadora_erro">
+                            🧮 Erro na calculadora
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="layout_quebrado">
+                            📱 Layout quebrado no celular
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="certificados_impressao">
+                            🖨️ Problemas na impressão dos certificados
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="problemas_tecnicos" value="nenhum">
+                            ✅ Nenhum problema encontrado
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Descreva detalhadamente qualquer erro encontrado</label>
+                    <textarea class="form-textarea" name="detalhes_erros" placeholder="Se encontrou algum erro, descreva o que aconteceu, em qual material, e como reproduzir o problema..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Qual navegador você usou?</label>
+                    <select class="form-select" name="navegador">
+                        <option value="">Selecione o navegador</option>
+                        <option value="chrome">Google Chrome</option>
+                        <option value="firefox">Mozilla Firefox</option>
+                        <option value="safari">Safari</option>
+                        <option value="edge">Microsoft Edge</option>
+                        <option value="opera">Opera</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 5: CONTEÚDO E QUALIDADE -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">📚</span>
+                    Conteúdo e Qualidade
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Qualidade do conteúdo do ebook (1-10) <span class="required">*</span></label>
+                    <div class="rating-group">
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="1" required>
+                            <span class="rating-number">1</span>
+                            <span class="rating-label">Muito ruim</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="2" required>
+                            <span class="rating-number">2</span>
+                            <span class="rating-label">Ruim</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="3" required>
+                            <span class="rating-number">3</span>
+                            <span class="rating-label">Regular</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="4" required>
+                            <span class="rating-number">4</span>
+                            <span class="rating-label">Bom</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="5" required>
+                            <span class="rating-number">5</span>
+                            <span class="rating-label">Muito bom</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="6" required>
+                            <span class="rating-number">6</span>
+                            <span class="rating-label">Ótimo</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="7" required>
+                            <span class="rating-number">7</span>
+                            <span class="rating-label">Excelente</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="8" required>
+                            <span class="rating-number">8</span>
+                            <span class="rating-label">Fantástico</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="9" required>
+                            <span class="rating-number">9</span>
+                            <span class="rating-label">Incrível</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="qualidade_conteudo" value="10" required>
+                            <span class="rating-number">10</span>
+                            <span class="rating-label">Perfeito</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Utilidade dos materiais complementares (1-10) <span class="required">*</span></label>
+                    <div class="rating-group">
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="1" required>
+                            <span class="rating-number">1</span>
+                            <span class="rating-label">Inútil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="2" required>
+                            <span class="rating-number">2</span>
+                            <span class="rating-label">Pouco útil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="3" required>
+                            <span class="rating-number">3</span>
+                            <span class="rating-label">Regular</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="4" required>
+                            <span class="rating-number">4</span>
+                            <span class="rating-label">Útil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="5" required>
+                            <span class="rating-number">5</span>
+                            <span class="rating-label">Muito útil</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="6" required>
+                            <span class="rating-number">6</span>
+                            <span class="rating-label">Ótimo</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="7" required>
+                            <span class="rating-number">7</span>
+                            <span class="rating-label">Excelente</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="8" required>
+                            <span class="rating-number">8</span>
+                            <span class="rating-label">Fantástico</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="9" required>
+                            <span class="rating-number">9</span>
+                            <span class="rating-label">Indispensável</span>
+                        </label>
+                        <label class="rating-option">
+                            <input type="radio" name="utilidade_materiais" value="10" required>
+                            <span class="rating-number">10</span>
+                            <span class="rating-label">Perfeito</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Qual material você achou mais útil?</label>
+                    <textarea class="form-textarea" name="material_mais_util" placeholder="Descreva qual material achou mais valioso e por quê..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Qual material você achou menos útil ou desnecessário?</label>
+                    <textarea class="form-textarea" name="material_menos_util" placeholder="Descreva qual material achou menos valioso e por quê..."></textarea>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 6: SUGESTÕES E MELHORIAS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">💡</span>
+                    Sugestões e Melhorias
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">O que você adicionaria ao produto?</label>
+                    <textarea class="form-textarea" name="sugestoes_adicionar" placeholder="Que materiais, funcionalidades ou conteúdos você gostaria de ver incluídos?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">O que você removeria ou mudaria?</label>
+                    <textarea class="form-textarea" name="sugestoes_remover" placeholder="Que partes você removeria, simplificaria ou mudaria?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Como você melhoraria a experiência do usuário?</label>
+                    <textarea class="form-textarea" name="melhorias_experiencia" placeholder="Sugestões para tornar o produto mais fácil de usar, mais atrativo ou mais eficaz..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Preço que você pagaria por este produto</label>
+                    <select class="form-select" name="preco_sugerido">
+                        <option value="">Selecione uma faixa de preço</option>
+                        <option value="ate_50">Até R$ 50</option>
+                        <option value="51_100">R$ 51 - R$ 100</option>
+                        <option value="101_150">R$ 101 - R$ 150</option>
+                        <option value="151_200">R$ 151 - R$ 200</option>
+                        <option value="201_300">R$ 201 - R$ 300</option>
+                        <option value="301_500">R$ 301 - R$ 500</option>
+                        <option value="acima_500">Acima de R$ 500</option>
+                        <option value="nao_pagaria">Não pagaria</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- SEÇÃO 7: COMENTÁRIOS FINAIS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-icon">💬</span>
+                    Comentários Finais
+                </h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Comentários gerais e observações</label>
+                    <textarea class="form-textarea" name="comentarios_finais" placeholder="Compartilhe qualquer outro feedback, impressão ou sugestão que não foi coberta nas perguntas anteriores..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Você gostaria de ser contactado para esclarecimentos?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="contato_esclarecimentos" value="sim">
+                            ✅ Sim, pode entrar em contato
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="contato_esclarecimentos" value="nao">
+                            ❌ Não, prefiro não ser contactado
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email para contato (opcional)</label>
+                    <input type="email" class="form-input" name="email_contato" placeholder="seu@email.com">
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Enviando seu feedback...</p>
+                </div>
+                
+                <div id="submitSection">
+                    <h3>🚀 Pronto para Enviar?</h3>
+                    <p>Seu feedback é muito importante para melhorarmos o produto!</p>
+                    <button type="submit" class="submit-btn">📤 Enviar Feedback</button>
+                    
+                    <div class="privacy-note">
+                        <strong>🔒 Privacidade:</strong> Suas respostas serão usadas apenas para melhorar o produto. 
+                        Não compartilharemos suas informações com terceiros.
+                    </div>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <h3>✅ Feedback Enviado com Sucesso!</h3>
+                    <p>Muito obrigado por dedicar seu tempo para nos ajudar a melhorar o produto. 
+                    Seu feedback é extremamente valioso para nós!</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <h4>❌ Erro ao Enviar</h4>
+                    <p>Houve um problema ao enviar seu feedback. Por favor, tente novamente ou entre em contato conosco diretamente.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // EmailJS Configuration - CONFIGURED
+        const EMAILJS_SERVICE_ID = 'service_swt5sfx';
+        const EMAILJS_TEMPLATE_ID = 'template_xqy7hfa';
+        const EMAILJS_PUBLIC_KEY = 'MnQW4Hj0BtRSzL0P8';
+        
+        // Initialize EmailJS
+        (function() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+            }
+        })();
+        
+        // Progress bar functionality
+        function updateProgress() {
+            const form = document.getElementById('feedbackForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            const filledFields = Array.from(requiredFields).filter(field => {
+                if (field.type === 'radio') {
+                    return form.querySelector(`input[name="${field.name}"]:checked`);
+                }
+                return field.value.trim() !== '';
+            });
+            
+            const progress = (filledFields.length / requiredFields.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        // Initialize EmailJS when page loads
+        window.addEventListener('load', function() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+                console.log('EmailJS initialized successfully');
+            } else {
+                console.error('EmailJS failed to load');
+            }
+        });
+        
+        // Add event listeners for progress tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('feedbackForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(input => {
+                input.addEventListener('change', updateProgress);
+                input.addEventListener('input', updateProgress);
+            });
+            
+            // Initial progress calculation
+            updateProgress();
+        });
+        
+        // Radio and checkbox styling
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'radio') {
+                // Remove selected class from all options in the same group
+                const groupName = e.target.name;
+                const allOptions = document.querySelectorAll(`input[name="${groupName}"]`);
+                allOptions.forEach(option => {
+                    option.closest('.radio-option, .rating-option').classList.remove('selected');
+                });
+                // Add selected class to the chosen option
+                e.target.closest('.radio-option, .rating-option').classList.add('selected');
+            }
+            
+            if (e.target.type === 'checkbox') {
+                const option = e.target.closest('.checkbox-option');
+                if (e.target.checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            }
+        });
+        
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitSection').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Handle regular fields
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    // If key already exists, convert to array
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Add timestamp and technical info
+            data.timestamp = new Date().toISOString();
+            data.user_agent = navigator.userAgent;
+            data.screen_resolution = `${screen.width}x${screen.height}`;
+            data.viewport_size = `${window.innerWidth}x${window.innerHeight}`;
+            
+            // Prepare email template parameters
+            const templateParams = {
+                to_email: 'eliteacademia2024@gmail.com',
+                from_name: data.nome || 'Usuário Anônimo',
+                subject: 'Feedback Beta - Transforme Sua Vida',
+                
+                // Convert data to readable format
+                feedback_data: JSON.stringify(data, null, 2),
+                
+                // Key metrics for quick overview
+                avaliacao_geral: data.avaliacao_geral,
+                recomendaria: data.recomendaria,
+                facilidade_navegacao: data.facilidade_navegacao,
+                qualidade_conteudo: data.qualidade_conteudo,
+                dispositivo: data.dispositivo,
+                preco_sugerido: data.preco_sugerido
+            };
+            
+            // Try to send via EmailJS
+            if (typeof emailjs !== 'undefined' && emailjs.send) {
+                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        showSuccess();
+                    })
+                    .catch(function(error) {
+                        console.log('FAILED...', error);
+                        showError();
+                    });
+            } else {
+                // EmailJS not configured properly
+                console.error('EmailJS not available or not initialized');
+                showError();
+            }
+        });
+        
+        function showSuccess() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successMessage').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitSection').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorMessage').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+</body>
+</html>
+
